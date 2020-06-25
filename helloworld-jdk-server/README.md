@@ -1,3 +1,6 @@
+This is probably the smallest Helloworld with the fastest startup, using Http Server from the
+JDK.
+
 ## Build
 ```
 mvn package

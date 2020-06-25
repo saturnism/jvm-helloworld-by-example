@@ -1,3 +1,8 @@
+This example builds a simple Spring Boot application, but with a shaded archive instead
+of a regular Spring Boot nested JARs.
+
+This allows Spring Boot to take advantage of AppCDS.
+
 ## Build
 ```
 mvn package
