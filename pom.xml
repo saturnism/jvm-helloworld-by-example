@@ -11,6 +11,9 @@
 
   <modules>
     <module>helloworld-jdk-server</module>
+    <module>helloworld-springboot-shaded</module>
+    <module>helloworld-springboot-tomcat</module>
+    <module>helloworld-springboot-webflux</module>
   </modules>
 
 </project>
