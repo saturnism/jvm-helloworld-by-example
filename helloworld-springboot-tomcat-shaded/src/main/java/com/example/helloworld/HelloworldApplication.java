@@ -40,7 +40,6 @@ class AppCdsApplicationListener implements ApplicationListener<ApplicationReadyE
       SpringApplication.exit(ctx, () -> 0);
     }
   }
-
 }
 
 
