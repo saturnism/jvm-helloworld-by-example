@@ -11,8 +11,6 @@
 	<groupId>com.example</groupId>
 	<artifactId>helloworld-springboot-tomcat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>helloworld</name>
-	<description>Demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>11</java.version>
