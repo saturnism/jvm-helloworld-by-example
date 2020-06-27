@@ -38,6 +38,9 @@ LAZY_INIT_FLAGS="-Dspring.main.lazy-initialization=true"
 
 cd ..
 mvn --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
+
+  mvn -pl "$module" package -DskipTests
+
   image_name="${IMAGE_PREFIX}/${module}-docker"
 
   echo "Deploy to App Engine, F1"
