@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>helloworld-springboot-shaded</artifactId>
+	<artifactId>helloworld-springboot-tomcat-shaded</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
