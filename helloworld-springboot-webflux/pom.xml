@@ -48,6 +48,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>helloworld</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

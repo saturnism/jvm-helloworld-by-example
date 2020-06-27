@@ -1,6 +1,6 @@
 FROM adoptopenjdk:11-jre-hotspot as APPCDS
 
-COPY target/helloworld-jdk-server-1.0-SNAPSHOT.jar /helloworld.jar
+COPY target/helloworld.jar /helloworld.jar
 RUN EXIT_IMMEDIATELY=true java -XX:DumpLoadedClassList=classes.lst -jar helloworld.jar
 RUN java -Xshare:dump -XX:SharedClassListFile=classes.lst -XX:SharedArchiveFile=appcds.jsa --class-path helloworld.jar
 

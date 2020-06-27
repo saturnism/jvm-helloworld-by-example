@@ -10,7 +10,7 @@ mvn package
 
 ## Run
 ```
-java -jar target/helloworld-springboot-webflux-shaded-0.0.1-SNAPSHOT.jar
+java -jar target/helloworld.jar
 ```
 
 ## Containerize with Jib
@@ -38,7 +38,7 @@ docker run -ti --rm -e JAVA_TOOL_OPTIONS="-Xshare:on -XX:SharedArchiveFile=appcd
 ## App Engine
 
 ```
-gcloud app deploy target/helloworld-springboot-webflux-shaded-0.0.1-SNAPSHOT.jar 
+gcloud app deploy target/helloworld.jar 
 ```
 
 ## Cloud Run

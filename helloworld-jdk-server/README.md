@@ -8,7 +8,7 @@ mvn package
 
 ## Run
 ```
-java -jar target/helloworld-jdk-server-1.0-SNAPSHOT.jar
+java -jar target/helloworld.jar
 ```
 
 ## Containerize with Jib
@@ -36,7 +36,7 @@ docker run -ti --rm -e JAVA_TOOL_OPTIONS="-Xshare:on -XX:SharedArchiveFile=appcd
 ## App Engine
 
 ```
-gcloud app deploy target/helloworld-jdk-server-1.0-SNAPSHOT.jar 
+gcloud app deploy target/helloworld.jar
 ```
 
 ## Cloud Run
