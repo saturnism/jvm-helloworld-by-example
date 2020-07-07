@@ -21,16 +21,18 @@ mvn --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(
   docker build -t "${IMAGE_PREFIX}/${module}-docker" .
   docker push "${IMAGE_PREFIX}/${module}-docker"
 
-  echo "Build with Buildpack"
-  mvn -DskipTests spring-boot:build-image \
-    -Dspring-boot.build-image.imageName="${IMAGE_PREFIX}/${module}-buildpack"
-  docker push "${IMAGE_PREFIX}/${module}-buildpack"
+  if [[ "$module" == *"springboot-"* ]]; then
+    echo "Build with Spring Boot Buildpack"
+    mvn -DskipTests spring-boot:build-image \
+      -Dspring-boot.build-image.imageName="${IMAGE_PREFIX}/${module}-buildpack"
+    docker push "${IMAGE_PREFIX}/${module}-buildpack"
 
-  echo "Build with GCP Buildpack"
-  mvn -DskipTests spring-boot:build-image \
-    -Dspring-boot.build-image.builder=gcr.io/buildpacks/builder \
-    -Dspring-boot.build-image.imageName="${IMAGE_PREFIX}/${module}-buildpack-gcp"
-  docker push "${IMAGE_PREFIX}/${module}-buildpack-gcp"
+    echo "Build with GCP Buildpack"
+    mvn -DskipTests spring-boot:build-image \
+      -Dspring-boot.build-image.builder=gcr.io/buildpacks/builder \
+      -Dspring-boot.build-image.imageName="${IMAGE_PREFIX}/${module}-buildpack-gcp"
+    docker push "${IMAGE_PREFIX}/${module}-buildpack-gcp"
+  fi
 
   echo "Build with Jib"
   mvn -DskipTests compile com.google.cloud.tools:jib-maven-plugin:2.4.0:build \
