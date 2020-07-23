@@ -4,11 +4,20 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.Executors;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 public class HelloWorldServer {
   private static final long initialTimestampMs = System.currentTimeMillis();
   private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
+
+  {
+    LogManager.getLogManager().reset();
+    StreamHandler stdoutHandler = new StreamHandler(System.out, new SimpleFormatter());
+    logger.addHandler(stdoutHandler);
+  }
 
   public static void main(String[] args) throws IOException {
     var port = Integer.valueOf(Optional.ofNullable(System.getenv("PORT")).orElse("8080"));
@@ -30,7 +39,7 @@ public class HelloWorldServer {
 
     final var readyTimestampMs = System.currentTimeMillis();
 
-    logger.info("Started: " + (readyTimestampMs - initialTimestampMs) + "ms");
+    logger.info("Started HelloWorldServer in " + (readyTimestampMs - initialTimestampMs) + " ms");
     server.start();
 
     if ("true".equalsIgnoreCase(System.getenv("EXIT_IMMEDIATELY"))) {

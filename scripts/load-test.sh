@@ -10,6 +10,7 @@ else
 fi
 
 REPORT_DIR="$SCRIPT_DIR/../reports"
+rm -rf "$REPORT_DIR"
 mkdir -p $REPORT_DIR
 
 function service_name {
@@ -22,7 +23,7 @@ function loadtest_url {
   local url="$1"
   local report_file="$2"
 
-  hey -c 100 -n 1000 -disable-keepalive "$url" > "$report_file"
+  hey -c 100 -n 1000 -t 0 -disable-keepalive -o csv "$url" > "$report_file"
 }
 
 function loadtest_appengine {
@@ -32,8 +33,12 @@ function loadtest_appengine {
   local url=$(gcloud app browse --service="$service_name" --project="$project_id" --no-launch-browser)
   echo "- $url"
 
-  local report_file="$REPORT_DIR/appengine-$service_name.txt"
-  loadtest_url "$url" "$report_file"
+  local report_file="$REPORT_DIR/appengine-$service_name"
+  loadtest_url "$url" "${report_file}.txt"
+
+  gcloud logging read --project="$project_id" "log_name=\"projects/${project_id}/logs/stdout\" resource.type=\"gae_app\" resource.labels.module_id=\"${service_name}\" textPayload =~ \".*Started .*\"" \
+     --format='value(textPayload)' --limit=100 > "${report_file}.log"
+
 }
 
 function loadtest_cloudrun {
@@ -44,8 +49,10 @@ function loadtest_cloudrun {
   local url=$(gcloud run services describe "$service_name" --region="$region" --project="$project_id" --platform=managed --format='value(status.address.url)')
   echo "- $url"
 
-  local report_file="$REPORT_DIR/cloudrun-$service_name.txt"
-  loadtest_url "$url" "$report_file"
+  local report_file="$REPORT_DIR/cloudrun-$service_name"
+  loadtest_url "$url" "${report_file}.txt"
+  gcloud logging read --project="$project_id" "log_name=\"projects/${project_id}/logs/run.googleapis.com%2Fstdout\" resource.type=\"cloud_run_revision\" resource.labels.service_name=\"${service_name}\" textPayload =~ \".*Started .*\"" \
+     --format='value(textPayload)' --limit=100 > "${report_file}.log"
 }
 
 function loadtest_appengine_variations {
@@ -166,6 +173,10 @@ function loadtest_module {
   loadtest_appengine_variations "$project_id" "$module"
   loadtest_cloudrun_variations "$project_id" "$module"
 }
+
+echo "Delete Cloud Logging Logs"
+gcloud logging logs delete -q --project="$PROJECT_ID" "projects/$PROJECT_ID/logs/stdout"
+gcloud logging logs delete -q --project="$PROJECT_ID" "projects/$PROJECT_ID/logs/run.googleapis.com%2Fstdout"
 
 if [ "$2" != "" ]; then
   loadtest_module "$PROJECT_ID" "$2"

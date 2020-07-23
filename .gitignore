@@ -30,3 +30,4 @@ dependency-reduced-pom.xml
 
 *.sw?
 reports/
+.DS_Store
