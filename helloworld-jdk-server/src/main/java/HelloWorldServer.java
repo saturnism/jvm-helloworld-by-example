@@ -4,7 +4,9 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.Executors;
+import java.util.logging.Handler;
 import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -13,10 +15,21 @@ public class HelloWorldServer {
   private static final long initialTimestampMs = System.currentTimeMillis();
   private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
 
-  {
+  static {
     LogManager.getLogManager().reset();
-    StreamHandler stdoutHandler = new StreamHandler(System.out, new SimpleFormatter());
-    logger.addHandler(stdoutHandler);
+    logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()) {
+      @Override
+      public synchronized void publish(LogRecord record) {
+        super.publish(record);
+        flush();
+      }
+
+      @Override
+      public synchronized void close() throws SecurityException {
+        flush();
+        super.close();
+      }
+    });
   }
 
   public static void main(String[] args) throws IOException {
