@@ -1,6 +1,8 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname $(realpath "$0"))
 cd "$SCRIPT_DIR/.."
+REPORT_DIR="$SCRIPT_DIR/../reports"
+mkdir -p "$REPORT_DIR"
 
 if [ "$1" != "" ]; then
   PROJECT_ID="$1"
@@ -32,7 +34,10 @@ function deploy_appengine {
   service_name="$service_name" instance_class="$instance_class" java_tool_options="$java_tool_options" \
     envsubst > $appyaml_file
 
-  gcloud -q --project="$project_id" app deploy "$jar" --appyaml="$appyaml_file" -v 1
+  local report_file="$REPORT_DIR/appengine-$service_name.time"
+  {
+    time gcloud -q --project="$project_id" app deploy "$jar" --appyaml="$appyaml_file" -v=1 2>&1
+  } 2>"$report_file"
 
   rm $appyaml_file
 }
@@ -46,7 +51,11 @@ function deploy_cloudrun {
   local memory=$6
   local java_tool_options=$7
 
-  gcloud -q --project="$project_id" run deploy "$service_name" --region="$region" --image="$image" --set-env-vars="JAVA_TOOL_OPTIONS=${java_tool_options}" --platform managed --allow-unauthenticated
+  local report_file="$REPORT_DIR/cloudrun-$service_name.time"
+
+  {
+    time gcloud -q --project="$project_id" run deploy "$service_name" --region="$region" --image="$image" --set-env-vars="JAVA_TOOL_OPTIONS=${java_tool_options}" --platform managed --allow-unauthenticated 2>&1
+  } 2>"$report_file"
 }
 
 function deploy_appengine_variations {

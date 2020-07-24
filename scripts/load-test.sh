@@ -10,7 +10,7 @@ else
 fi
 
 REPORT_DIR="$SCRIPT_DIR/../reports"
-rm -rf "$REPORT_DIR"
+#rm -rf "$REPORT_DIR"
 mkdir -p $REPORT_DIR
 
 function service_name {
