@@ -9,11 +9,13 @@ else
   exit 1
 fi
 
-pushd $REPORT_DIR
+pushd $REPORT_DIR >&2
 
 echo -e "name,deploy_time,loadtest_duration,latency_min,latency_max,latency_p90,latency_p95,latency_p99,success_rate,startup_min,startup_max,startup_p90,startup_p95,startup_p99"
 for f in *.txt; do
   name=${f%.txt}
+
+  echo -e "${name}" >&2
 
   n=$(tail -n +2 $f | cut -d, -f1 | st --count)
   min=$(tail -n +2 $f | cut -d, -f1 | st --min)
@@ -47,10 +49,10 @@ for f in *.txt; do
   echo -e "${name},${deploy_time},${duration},${min},${max},${p90},${p95},${p99},$(printf %.2f ${success_rate})%,${s_min},${s_max},${s_p90},${s_p95},${s_p99}"
 
   echo -e "- Startup Time: min=${s_min} max=${s_max} p90=${s_p90} p95=${s_p95} p99=${s_p99}" >&2
-  echo -e "- Latency: min=${min} max=${max} p90=${p90} p95=${p95} p99=${p99}"
+  echo -e "- Latency: min=${min} max=${max} p90=${p90} p95=${p95} p99=${p99}" >&2
   echo -e "- Success Rate: success=$(printf %.2f ${success_rate})% failure=$(printf %.2f ${failure_rate})%" >&2
   echo -e "- Durations: deploy_time=${deploy_time} loadtest_duration=${duration}" >&2
 
 done
 
-popd
+popd >&2
