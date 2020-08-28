@@ -20,6 +20,28 @@ public class HelloworldApplication {
   }
 }
 
+@Component
+@Order(0)
+class AppCdsApplicationListener implements ApplicationListener<ApplicationReadyEvent> {
+  private final boolean appcds;
+  private final ApplicationContext ctx;
+  private final RestTemplate restTemplate = new RestTemplate();
+
+  AppCdsApplicationListener(@Value("${appcds:false}") boolean appcds,
+      ApplicationContext ctx) {
+    this.appcds = appcds;
+    this.ctx = ctx;
+  }
+
+  @Override
+  public void onApplicationEvent(ApplicationReadyEvent event) {
+    if (appcds) {
+      restTemplate.getForEntity("http://localhost:8080/", String.class);
+      SpringApplication.exit(ctx, () -> 0);
+    }
+  }
+}
+
 @RestController
 class HelloController {
 
