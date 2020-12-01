@@ -189,7 +189,7 @@ function deploy_module {
 if [ "$2" != "" ]; then
   deploy_module "$PROJECT_ID" "$2"
 else
-  mvn --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
+  mvn -B --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
     deploy_module "$PROJECT_ID" "$module"
   done
 fi

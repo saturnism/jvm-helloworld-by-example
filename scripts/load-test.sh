@@ -181,7 +181,7 @@ gcloud logging logs delete -q --project="$PROJECT_ID" "projects/$PROJECT_ID/logs
 if [ "$2" != "" ]; then
   loadtest_module "$PROJECT_ID" "$2"
 else
-  mvn --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
+  mvn -B --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
     loadtest_module "$PROJECT_ID" "$module"
   done
 fi

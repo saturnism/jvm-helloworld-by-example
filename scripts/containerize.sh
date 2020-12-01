@@ -48,7 +48,7 @@ if [ "$2" != "" ]; then
   containerize $PROJECT_ID $2
 else
   echo "Containerize all modules..."
-  mvn --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
+  mvn -B --also-make dependency:tree | grep maven-dependency-plugin | awk '{ print $(NF-1) }' | grep -v parent | while read module; do
     containerize $PROJECT_ID $module
   done
 fi
