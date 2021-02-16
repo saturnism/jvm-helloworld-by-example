@@ -18,6 +18,11 @@ java -jar target/helloworld-springboot-tomcat-shaded-0.0.1-SNAPSHOT.jar
 mvn compile com.google.cloud.tools:jib-maven-plugin:2.4.0:build -Dimage=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-jib
 ```
 
+## Containerize with Cloud Build
+```
+gcloud builds submit -t gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-cloudbuild
+```
+
 ## Docker Build with AppCDS
 ```
 mvn package
@@ -42,50 +47,49 @@ gcloud app deploy target/helloworld-springboot-tomcat-shaded-0.0.1-SNAPSHOT.jar
 ```
 
 ## Cloud Run
-Run with Jib
-```
-gcloud run deploy helloworld-springboot-tomcat-shaded-jib \
-  --image=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-jib \
-   --region=us-central1 \
-   --platform managed \
-   --allow-unauthenticated
-```
 
-Run with Docker Image, without AppCDS
+*Change the <IMAGE_NAME> according with your compilation mode*
+
+* *gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-jib*
+* *gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-docker*
+* *gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-cloudbuild*
+
+
+Run without AppCDS
 ```
 gcloud run deploy helloworld-springboot-tomcat-shaded-docker \
-  --image=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded \
+  --image=<IMAGE_NAME> \
   --region=us-central1 \
   --platform managed \
   --allow-unauthenticated
 ```
 
-Run with Docker Image, without AppCDS, with Tiered compilation
+Run without AppCDS, with Tiered compilation
 ```
 gcloud run deploy helloworld-springboot-tomcat-shaded-docker-t1 \
-  --image=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded \
-  -e JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+  --image=<IMAGE_NAME> \
+  --set-env-vars=JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
   --region=us-central1 \
   --platform managed \
   --allow-unauthenticated
 ```
 
 
-Run with Docker Image, with AppCDS
+Run with AppCDS
 ```
 gcloud run deploy helloworld-springboot-tomcat-shaded \
-  --image=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-docker \
-  -e JAVA_TOOL_OPTIONS="-Xshare:on -XX:SharedArchiveFile=appcds.jsa"
+  --image=<IMAGE_NAME> \
+  --set-env-vars=JAVA_TOOL_OPTIONS="-Xshare:on -XX:SharedArchiveFile=appcds.jsa"
   --region=us-central1 \
   --platform managed \
   --allow-unauthenticated
 ```
 
-Run with Docker Image, with AppCDS, with Tiered compilation
+Run with AppCDS, with Tiered compilation
 ```
 gcloud run deploy helloworld-springboot-tomcat-shaded \
-  --image=gcr.io/PROJECT_ID/helloworld-springboot-tomcat-shaded-docker-t1 \
-  -e JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xshare:on -XX:SharedArchiveFile=appcds.jsa"
+  --image=<IMAGE_NAME> \
+  --set-env-vars=JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xshare:on -XX:SharedArchiveFile=appcds.jsa"
   --region=us-central1 \
   --platform managed \
   --allow-unauthenticated
